@@ -151,12 +151,12 @@ class Trainer():
         self.fwd_decoder = Word_Decoder(embedding_dim, units, len(tokenizer.word_index))
         self.bwd_decoder = Word_Decoder(embedding_dim, units, len(tokenizer.word_index))
 
-    def loss_function(real, pred):
+    def loss_function(self, real, pred):
         mask = 1 - np.equal(real, 0)
         loss_ = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=real, logits=pred) * mask
         return tf.reduce_mean(loss_)
 
-    def tensors_are_same(a, b):
+    def tensors_are_same(self, a, b):
         r = str(tf.reduce_all(tf.equal(a, b))) # In a perfect world, I would just compare tf.reduce_all(tf.equal(a, b)).numpy()
         return r[10] == 'T'
 

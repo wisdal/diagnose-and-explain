@@ -55,18 +55,18 @@ FLAGS = tf.flags.FLAGS
 MAX_PARAGRAPH_LENGTH = 18 # Fixed max number of sentences per report. This value comes from preprocessing
 MAX_SENTENCE_LENGTH = 30 # Fixed max number of words per sentence. This value comes from preprocessing
 
-""" 
-Download the Indiana University [Chest X-Ray dataset](https://openi.nlm.nih.gov/faq.php) to train our model. 
-The dataset contains 3955 chest radiology reports from various hospital systems and 7470 associated chest x-rays 
-(most reports are associated with 2 or more images representing frontal and lateral views). 
+"""
+Download the Indiana University [Chest X-Ray dataset](https://openi.nlm.nih.gov/faq.php) to train our model.
+The dataset contains 3955 chest radiology reports from various hospital systems and 7470 associated chest x-rays
+(most reports are associated with 2 or more images representing frontal and lateral views).
 """
 
 prepare_dataset.maybe_download()
 
 """
 Preprocess the dataset
-The dataset comes with PNG images (the chest x-rays) and XML files (the radiology reports). 
-This code parses the XML files and builds vectors associating each report with exactly one image. 
+The dataset comes with PNG images (the chest x-rays) and XML files (the radiology reports).
+This code parses the XML files and builds vectors associating each report with exactly one image.
 A report is associated with 1 or more chest x-rays but we decide to consider only one.
 
 Key information we extract from radiology reports are:
@@ -94,7 +94,7 @@ tokenizer, findings_vector = prepare_dataset.transform_input(all_findings, all_i
 # Create training and validation sets using 80-20 split
 img_name_train, img_name_test, findings_train, findings_test = train_test_split(all_img_names, findings_vector, test_size = 0.2, random_state = 0)
 
-trainer = model.Trainer(tokenizer, emdedding_dim=256, units=512)
+trainer = model.Trainer(tokenizer, embedding_dim=256, units=512)
 
 FEATURES_SHAPE = 2048
 ATTENTION_FEATURES_SHAPE = 64
@@ -110,14 +110,14 @@ def load_image(image_path):
     img = tf.image.resize_images(img, (299, 299))
     img = tf.keras.applications.inception_v3.preprocess_input(img)
     return img, image_path
-	
+
 def map_func(img_name, findings):
 	#img_tensor = np.load(img_name.decode('utf-8')+'.npy')
 	#return img_tensor, findings
 	img, img_path = load_image(img_name)
 	img = tf.expand_dims(img, 0)
 	img_tensor = inception_model(img)
-	img_tensor = tf.reshape(img_tensor, 
+	img_tensor = tf.reshape(img_tensor,
 							(-1, img_tensor.shape[3]))
 
 	return img_tensor, findings
@@ -129,19 +129,19 @@ def _set_shapes(images, findings):
   findings.set_shape(findings.get_shape().merge_with(
     tf.TensorShape([MAX_PARAGRAPH_LENGTH + MAX_PARAGRAPH_LENGTH, MAX_SENTENCE_LENGTH])))
   return images, findings
-  
+
 def input_fn(params):
 	batch_size = params['batch_size']
 	#_img_name_train = np.asarray(img_name_train)
 	_findings_train = np.asarray(findings_train)
-	
+
 	#my_dict = {
 		#"img_tensors": _img_name_train,
 		#"findings": _findings_train,
 	#}
 
 	#dataset = tf.data.Dataset.from_tensor_slices((dict(my_dict)))
-  
+
 	dataset = tf.data.Dataset.from_tensor_slices((img_name_train, _findings_train))
 
 	# using map to load the numpy files in parallel
@@ -155,7 +155,7 @@ def input_fn(params):
 	dataset = dataset.map(
       functools.partial(_set_shapes)
     )
-	
+
 	# shuffling and batching
 	dataset = dataset.shuffle(10000).repeat()
 	# https://www.tensorflow.org/api_docs/python/tf/contrib/data/batch_and_drop_remainder
@@ -169,13 +169,13 @@ def model_fn(features, labels, mode, params):
   print("Model_Fn Shapes:", features.shape, labels.shape)
   print("Features:", features)
   batch_size = params['batch_size']
-  
+
   if mode == tf.estimator.ModeKeys.TRAIN:
     optimizer = tf.train.AdamOptimizer()
     optimizer = tf.contrib.tpu.CrossShardOptimizer(optimizer)
     loss, gradients, variables = trainer.train_fn(batch_size, features, labels)
     train_op = optimizer.apply_gradients(zip(gradients, variables), tf.train.get_or_create_global_step())
-    
+
     return tf.contrib.tpu.TPUEstimatorSpec(mode=tf.estimator.ModeKeys.TRAIN,
                                            loss = loss,
                                            train_op = train_op)

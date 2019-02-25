@@ -10,7 +10,7 @@ annotation_folder = ''
 
 def maybe_download():
     image_zip = 'NLMCXR_png.tgz'
-    if not os.path.exists(os.path.abspath('.') + '/' + image_zip):
+    if not os.path.exists(os.path.abspath('.') + '/dataset/' + image_zip):
         tf.keras.utils.get_file('NLMCXR_png.tgz',
 								cache_subdir=os.path.abspath('.') + '/dataset/',
 								origin = 'https://openi.nlm.nih.gov/imgs/collections/NLMCXR_png.tgz',
@@ -21,8 +21,8 @@ def maybe_download():
 								extract = True)
 
     global image_folder, annotation_folder
-    image_folder = '.'
-    annotation_folder = './ecgen-radiology/'
+    image_folder = './dataset/'
+    annotation_folder = './dataset/ecgen-radiology/'
 	#return image_folder, annotation_folder
 
 def extract_data():

@@ -160,15 +160,16 @@ class Trainer():
         r = str(tf.reduce_all(tf.equal(a, b))) # In a perfect world, I would just compare tf.reduce_all(tf.equal(a, b)).numpy()
         return r[10] == 'T'
 
-    def train_word_decoder(self, batch_size, loss, features, findings, i, prev_sentence):
-        fwd_hidden = tf.zeros((batch_size, self.units))
-        bwd_hidden = tf.zeros((batch_size, self.units))
+    def train_word_decoder(self, batch_size, loss, features, findings, i, \
+                           prev_sentence, fwd_hidden, bwd_hidden):
+        is_training_impressions = i >= int(findings.shape[1]/2)
+
         fwd_input = tf.expand_dims([self.tokenizer.word_index['<start>']] * batch_size, 1)
         bwd_input = tf.expand_dims([self.tokenizer.word_index['<pad>']] * batch_size, 1)
         hidden_states = tf.zeros((batch_size, 1, self.units + self.units)) # concatenated fwd and bwd hidden states
 
         for j in range(findings.shape[2]): # generate each word (each sentence has a fixed # of words)
-        #print("j", j)
+            print("j", j)
             predictions, fwd_hidden, _ = self.fwd_decoder(fwd_input, features, prev_sentence, fwd_hidden)
             loss += self.loss_function(findings[:, i, j], predictions)
             fwd_input = tf.expand_dims(findings[:, i, j], 1)
@@ -178,16 +179,18 @@ class Trainer():
             bwd_input = tf.expand_dims(findings[:, i, -(j+1)], 1)
 
             # Concat the bwd anf fwd hidden states
-            # batch_size, 1, units + units
-            hidden = tf.concat([tf.expand_dims(fwd_hidden, 1), tf.expand_dims(bwd_hidden, 1)], axis=-1)
-            if self.tensors_are_same(hidden_states, tf.zeros((batch_size, 1, self.units + self.units))) is True:
-              hidden_states = hidden
-            else:
-              hidden_states = tf.concat([hidden_states, hidden], axis = 1)
+            # (batch_size, 1, units + units)
+            if not is_training_impressions is True:
+                hidden = tf.concat([tf.expand_dims(fwd_hidden, 1), tf.expand_dims(bwd_hidden, 1)], axis=-1)
+                if self.tensors_are_same(hidden_states, tf.zeros((batch_size, 1, self.units + self.units))) is True:
+                  hidden_states = hidden
+                else:
+                  hidden_states = tf.concat([hidden_states, hidden], axis = 1)
 
-        prev_sentence, _ = self.sentence_encoder(hidden_states, features)
-        print(hidden_states.shape, prev_sentence.shape)
-        return loss, prev_sentence
+        if not is_training_impressions is True:
+            prev_sentence, _ = self.sentence_encoder(hidden_states, features)
+            print(hidden_states.shape, prev_sentence.shape)
+        return loss, prev_sentence, fwd_hidden, bwd_hidden
 
     """ Training
 
@@ -205,11 +208,13 @@ class Trainer():
             features = self.image_encoder(img_tensor)
             encoded_sentences = tf.zeros((batch_size, 1, self.units))
             prev_sentence = tf.zeros((batch_size, self.units))
-
+            fwd_hidden = tf.zeros((batch_size, self.units))
+            bwd_hidden = tf.zeros((batch_size, self.units))
             # Generate Findings
             for i in range(int(findings.shape[1]/2)): # for each sentence in "findings" (each batch has a fixed # of sentences)
                 print("-------------------------------------i:", i)
-                loss, prev_sentence = self.train_word_decoder(batch_size, loss, features, findings, i, prev_sentence)
+                loss, prev_sentence, fwd_hidden, bwd_hidden = self.train_word_decoder(batch_size, loss, features, findings, i, \
+                                                                                      prev_sentence, fwd_hidden, bwd_hidden)
                 if self.tensors_are_same(encoded_sentences, tf.zeros((batch_size, 1, self.units))) is True:
                     encoded_sentences = tf.expand_dims(prev_sentence, 1)
                 else:
@@ -219,9 +224,12 @@ class Trainer():
 
             # Generate Impressions
             prev_sentence = encoded_paragraph
+            fwd_hidden = tf.zeros((batch_size, self.units))
+            bwd_hidden = tf.zeros((batch_size, self.units))
             for i in range(int(findings.shape[1]/2), findings.shape[1]): # for each sentence in "impressions" (each batch has a fixed # of sentences)
                 print("-------------------------------------i:", i)
-                loss, _ = self.train_word_decoder(batch_size, loss, features, findings, i, prev_sentence)
+                loss, _, fwd_hidden, bwd_hidden = self.train_word_decoder(batch_size, loss, features, findings, i, \
+                                                                          prev_sentence, fwd_hidden, bwd_hidden)
 
             # Outside of "With tf.GradientTape()"
             variables = self.image_encoder.variables + self.sentence_encoder.variables + self.paragraph_encoder.variables + \

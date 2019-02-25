@@ -52,8 +52,8 @@ tf.flags.DEFINE_integer("num_shards", 8, "Number of shards (TPU chips).")
 
 FLAGS = tf.flags.FLAGS
 
-MAX_PARAGRAPH_LENGTH = 18 # Fixed max number of sentences per report. This value comes from preprocessing
-MAX_SENTENCE_LENGTH = 30 # Fixed max number of words per sentence. This value comes from preprocessing
+MAX_PARAGRAPH_LENGTH = 14 # Fixed max number of sentences per report. This value comes from preprocessing
+MAX_SENTENCE_LENGTH = 20 # Fixed max number of words per sentence. This value comes from preprocessing
 
 """
 Download the Indiana University [Chest X-Ray dataset](https://openi.nlm.nih.gov/faq.php) to train our model.

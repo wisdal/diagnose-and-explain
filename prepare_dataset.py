@@ -124,10 +124,14 @@ def transform_input(all_findings, all_impressions, max_paragraph_length, max_sen
     for findings in all_findings_seq:
         while len(findings) < max_paragraph_length:
             findings.append([0])
+        if len(findings) > max_paragraph_length:
+            del findings[max_paragraph_length:]
 
     for impressions in all_impressions_seq:
         while len(impressions) < max_paragraph_length:
             impressions.append([0])
+        if len(impressions) > max_paragraph_length:
+            del impressions[max_paragraph_length:]
 
     # Padding sequences
     pad_sequences = tf.keras.preprocessing.sequence.pad_sequences

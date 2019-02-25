@@ -118,6 +118,8 @@ def transform_input(all_findings, all_impressions, max_paragraph_length, max_sen
     all_findings_seq = [tokenizer.texts_to_sequences(findings) for findings in all_findings]
     all_impressions_seq = [tokenizer.texts_to_sequences(impression) for impression in all_impressions]
 
+    tokenizer.word_index['<pad>'] = 0
+
     # Adding empty sentence seqs to each paragraph to have a fixed length for each
     for findings in all_findings_seq:
         while len(findings) < max_paragraph_length:

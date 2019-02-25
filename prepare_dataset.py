@@ -12,18 +12,18 @@ def maybe_download():
     image_zip = 'NLMCXR_png.tgz'
     if not os.path.exists(os.path.abspath('.') + '/dataset/' + image_zip):
         tf.keras.utils.get_file('NLMCXR_png.tgz',
-								cache_subdir=os.path.abspath('.') + '/dataset/',
-								origin = 'https://openi.nlm.nih.gov/imgs/collections/NLMCXR_png.tgz',
-								extract = True)
+                                cache_subdir=os.path.abspath('.') + '/dataset/',
+                                origin = 'https://openi.nlm.nih.gov/imgs/collections/NLMCXR_png.tgz',
+                                extract = True)
         tf.keras.utils.get_file('NLMCXR_reports.tgz',
-								cache_subdir=os.path.abspath('.') + '/dataset/',
-								origin = 'https://openi.nlm.nih.gov/imgs/collections/NLMCXR_reports.tgz',
-								extract = True)
+                                cache_subdir=os.path.abspath('.') + '/dataset/',
+                                origin = 'https://openi.nlm.nih.gov/imgs/collections/NLMCXR_reports.tgz',
+                                extract = True)
 
     global image_folder, annotation_folder
     image_folder = './dataset/'
     annotation_folder = './dataset/ecgen-radiology/'
-	#return image_folder, annotation_folder
+    #return image_folder, annotation_folder
 
 def extract_data():
     all_findings = []
@@ -38,7 +38,7 @@ def extract_data():
 
     # Storing impressions, findings and the image names in vectors
     for file in os.listdir(annotation_folder):
-        total_count =  total_count + 1
+        total_count += 1
         file = os.path.abspath(annotation_folder) + '/' + file
         e = xml.etree.ElementTree.parse(file).getroot()
 
@@ -46,7 +46,7 @@ def extract_data():
         # We choose to ignore reports having no associated image
         image_id = e.find('parentImage')
         if image_id is None:
-            no_image_count = no_image_count + 1
+            no_image_count += 1
             continue
 
         image_id = image_id.get('id')
@@ -63,11 +63,11 @@ def extract_data():
 
         # Sanity check: Skip this report if it has an empty "Impression" section
         if findings is None:
-            no_findings_count = no_findings_count + 1
+            no_findings_count += 1
             #findings = 'No finding'
             continue
         if impression is None:
-            no_impression_count = no_impression_count + 1
+            no_impression_count += 1
             continue
 
         # Transforming findings and impressions into lists of sentences
@@ -99,38 +99,43 @@ def extract_data():
     return all_findings, all_impressions, all_img_names, rids
 
 def init_inception_model():
-	# Initialize InceptionV3 and load the pretrained Imagenet weights
-	image_model = tf.keras.applications.InceptionV3(include_top=False,
-													weights='imagenet')
-	new_input = image_model.input
-	hidden_layer = image_model.layers[-1].output
+    # Initialize InceptionV3 and load the pretrained Imagenet weights
+    image_model = tf.keras.applications.InceptionV3(include_top=False,
+                                                    weights='imagenet')
+    new_input = image_model.input
+    hidden_layer = image_model.layers[-1].output
 
-	return tf.keras.Model(new_input, hidden_layer)
+    return tf.keras.Model(new_input, hidden_layer)
 
 def transform_input(all_findings, all_impressions, max_paragraph_length, max_sentence_length):
-	tokenizer = tf.keras.preprocessing.text.Tokenizer(oov_token="<unk>",
+    tokenizer = tf.keras.preprocessing.text.Tokenizer(oov_token="<unk>",
                                                   filters='!"#$%&()*+.,-/:;=?@[\]^_`{|}~ ')
 
-	findings_texts = [' '.join(findings) for findings in all_findings]
-	impressions_texts = [' '.join(impression) for impression in all_impressions]
-	tokenizer.fit_on_texts(findings_texts + impressions_texts)
-	all_findings_seq = [tokenizer.texts_to_sequences(findings) for findings in all_findings]
-	all_impressions_seq = [tokenizer.texts_to_sequences(impression) for impression in all_impressions]
+    findings_texts = [' '.join(findings) for findings in all_findings]
+    impressions_texts = [' '.join(impression) for impression in all_impressions]
+    tokenizer.fit_on_texts(findings_texts + impressions_texts)
+    all_findings_seq = [tokenizer.texts_to_sequences(findings) for findings in all_findings]
+    all_impressions_seq = [tokenizer.texts_to_sequences(impression) for impression in all_impressions]
 
-	# Adding empty sentence seqs to each paragraph to have a fixed length for each
-	for findings in all_findings_seq:
-	    while len(findings) < max_paragraph_length:
-		    findings.append([0])
+    # Adding empty sentence seqs to each paragraph to have a fixed length for each
+    for findings in all_findings_seq:
+        while len(findings) < max_paragraph_length:
+            findings.append([0])
 
-	for impressions in all_impressions_seq:
-	    while len(impressions) < max_paragraph_length:
-		    impressions.append([0])
+    for impressions in all_impressions_seq:
+        while len(impressions) < max_paragraph_length:
+            impressions.append([0])
 
-	# Padding sequences
-	pad_sequences = tf.keras.preprocessing.sequence.pad_sequences
-	findings_vector = [pad_sequences(findings, padding='post', maxlen=max_sentence_length) for findings in all_findings_seq]
-	impressions_vector = [pad_sequences(impressions, padding='post', maxlen=max_sentence_length) for impressions in all_impressions_seq]
+    # Padding sequences
+    pad_sequences = tf.keras.preprocessing.sequence.pad_sequences
+    findings_vector = [pad_sequences(findings, padding='post', maxlen=max_sentence_length) for findings in all_findings_seq]
+    impressions_vector = [pad_sequences(impressions, padding='post', maxlen=max_sentence_length) for impressions in all_impressions_seq]
 
-	findings_vector.append(impressions_vector) # Now, for a given batch "i", we can retrieve impressions = findings[i, max_paragraph_length:]
+    i = 0
+    for findings in findings_vector:
+        findings.append(impressions_vector[i])
+        i += 1
 
-	return tokenizer, findings_vector
+    # Now, for a given batch "i", we can retrieve impressions = findings[i, max_paragraph_length:]
+
+    return tokenizer, findings_vector

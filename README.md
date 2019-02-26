@@ -23,21 +23,15 @@ Our code was designed for training on Google Cloud TPU.
 
 * Head over to TensorFlow's quickstart on [setting up a TPU instance](https://cloud.google.com/tpu/docs/quickstart) to get started with running models on Cloud TPU.
 * Clone this repository
-  ```
+  ```shell
 	https://github.com/wisdal/diagnose-and-explain
   ```
 * Start training
-  ```
+  ```shell
     export STORAGE_BUCKET=<Your Storage Bucket>
-	
     python main.py --tpu=$TPU_NAME --model_dir=${STORAGE_BUCKET}/tpu --train_steps=20 --iterations_per_loop=100 --batch_size=512
-```
-{%
-## Predicting
-
-## Results
-%}
-
+  ```
+{%## Predicting ## Results %}
 ## Acknowledgements
 
 Parts of these experiments were possible thanks to the TensorFlow Research Cloud Program which offers free TPUs for training and running models on Google Cloud for a limited period of time.

@@ -26,13 +26,14 @@ Our model takes a Chest X-ray image as input and generates a complete radiology 
 **Impression:** no acute osseus abnormality.
 
 ---
+
 ### Visual Attention Plot
 Findings (left), Impression (right).
 <p>
 	<image align='left' src="samples/findings_attention_plot_3707.png" width="425px"/>    
 	<image align='right' src="samples/impression_attention_plot_3707.png" width="400px"/>
 </p>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 
 ## Dataset
 We trained our model on the Indiana University [Chest X-Ray collection](https://openi.nlm.nih.gov/faq.php). The dataset
@@ -40,7 +41,7 @@ comes with **3955** chest radiology reports from various hospital systems and **
 (most reports are associated with 2 or more images representing frontal and lateral views).
 
 ## Model architecture
-Our model uses a CNN-LSTM to generate words. Features extracted from a CNN are encoded and used by an hierarchical RNN to generate paragraphs (findings) sentence by sentence. We use an attention mechanism to extract visual and semantic features at many levels of the word and sentence generation to guide the word decoder.
+Our model uses a CNN-LSTM to generate words. Features extracted from a CNN model are encoded and used by an hierarchical RNN to generate paragraphs (findings) sentence by sentence. We use an attention mechanism at many levels of the decoding stage, to extract visual and semantic features. These are used to guide the word decoder.
 
 More details on our model architecture and proposed approach will be present in the soon-to-be-released preprint of our paper.
 

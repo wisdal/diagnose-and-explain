@@ -61,3 +61,5 @@ Our code was designed for training on Google Cloud TPU.
   
 ## Acknowledgements
 Parts of these experiments were possible thanks to the TensorFlow Research Cloud Program which offers free TPUs for training and running models on Google Cloud for a limited period of time.
+
+Model code was inspired from this TensorFlow [tutorial](https://github.com/tensorflow/tensorflow/blob/r1.13/tensorflow/contrib/eager/python/examples/nmt_with_attention/nmt_with_attention.ipynb)

@@ -22,9 +22,9 @@ Our model architecture and proposed approach are detailed in the preprint soon t
 Our code was designed for training on Google Cloud TPU.
 
 * Head over to TensorFlow's quickstart on [setting up a TPU instance](https://cloud.google.com/tpu/docs/quickstart) to get started with running models on Cloud TPU.
-* Clone this repository
+* Clone this repository and `cd` into directory 
   ```shell
-	https://github.com/wisdal/diagnose-and-explain
+	git clone https://github.com/wisdal/diagnose-and-explain && cd diagnose-and-explain
   ```
 * Start training
   ```shell

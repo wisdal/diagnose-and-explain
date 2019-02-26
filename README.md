@@ -7,17 +7,13 @@ Our model takes a Chest X-ray image as input and generates a complete radiology 
 
 ## Sample
 ### Ground truth:
-<image align='left' src="samples/image_3707.png"  width="150px" height="160px"/>
+<image align='left' src="samples/image_3707.png"  width="150px" height="180px"/>
 
 ---
 
 **Findings:** the cardiomediastinal silhouette is within normal limits for size and contour. The lungs are normally inflated without evidence of focal airspace disease, pleural effusion or pneumothorax. Stable calcified granuloma within the right upper lung. No acute bone abnormality.
-<br/>
-<br/>
 
 **Impression:** no acute cardiopulmonary process.
-<br/>
-<br/>
 
 ---
 ### Model output:
@@ -33,26 +29,11 @@ Our model takes a Chest X-ray image as input and generates a complete radiology 
 ### Visual Attention Plot
 Findings (left), Impression (right)
 <p>
-	<image align='left' src="samples/findings_attention_plot_3707.png" width="480px"/>    
+	<image align='left' src="samples/findings_attention_plot_3707.png" width="460px"/>    
 	<image align='right' src="samples/impression_attention_plot_3707.png" width="420px"/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>	
 </p>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>	
+
 ## Dataset
 We trained our model on the Indiana University [Chest X-Ray collection](https://openi.nlm.nih.gov/faq.php). The dataset
 comes with **3955** chest radiology reports from various hospital systems and **7470** associated chest x-rays 

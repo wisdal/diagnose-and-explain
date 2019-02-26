@@ -6,14 +6,14 @@ Our model takes a Chest X-ray image as input and generates a complete radiology 
 * **Impression:** generally a one-sentence diagnostic based on findings reported. Can contain multiple sentences.
 
 ### Sample
-Ground truth on the left, model output on the right.
-<image src="samples/ground_truth_3707.png" width="300px"/> <image src="samples/generated_3707.png" width="300px"/>
+Ground truth on the left, model output on the right. 
+
+<image src="samples/ground_truth_3707.png" width="200px" height="350px"/>       <image src="samples/generated_3707.png" width="200px" height="350px"/>
 
 ### Visual Attention Plot
-* Findings
-  <image src="samples/findings_attention_plot_3707.png" width="300px"/>
-* Impression
-  <image src="samples/impression_attention_plot_3707.png" width="300px"/>
+Findings (left), Impression (right)
+
+<image src="samples/findings_attention_plot_3707.png" width="300px"/>           <image src="samples/impression_attention_plot_3707.png" width="300px"/>
   
 ## Dataset
 We trained our model on the Indiana University [Chest X-Ray collection](https://openi.nlm.nih.gov/faq.php). The dataset
@@ -21,10 +21,7 @@ comes with **3955** chest radiology reports from various hospital systems and **
 (most reports are associated with 2 or more images representing frontal and lateral views).
 
 ## Model architecture
-Our model features a CNN-LSTM with a CNN Encoder, Sentence Encoder (attention-based), Paragraph Encoder (attention-based) and Word Decoder (visual attention). The LSTM is an hierarchical RNN that generates paragraphs (findings) sentence by sentence, and uses an attention model to
-encode each sentence. The "most important" words in the previous sentence are used as a semantics context in the generation of each word of the next sentence. 
-
-We use the same approach for generating sentences of the "impression" section with the only difference that we encode the "findings" paragraph using attention. This is used to guide as a context for generating impression sentences.
+Our model uses a CNN-LSTM to generate words. Features extracted from a CNN are encoded and used by an hierarchical RNN to generate paragraphs (findings) sentence by sentence. We use an attention mechanism to extract visual and semantic features at many levels of the word and sentence generation to guide the word decoder.
 
 More details on our model architecture and proposed approach will be present in the soon-to-be-released preprint of our paper.
 

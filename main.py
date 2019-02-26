@@ -60,7 +60,6 @@ Download the Indiana University [Chest X-Ray dataset](https://openi.nlm.nih.gov/
 The dataset contains 3955 chest radiology reports from various hospital systems and 7470 associated chest x-rays
 (most reports are associated with 2 or more images representing frontal and lateral views).
 """
-
 prepare_dataset.maybe_download()
 
 """
@@ -74,7 +73,6 @@ Key information we extract from radiology reports are:
 *   **Findings:** relates to observations regarding each part of the Chest examined.
 *   **Impression:** a diagnostic based on the findings reported.
 """
-
 all_findings, all_impressions, all_img_names, rids = prepare_dataset.extract_data()
 
 
@@ -88,7 +86,6 @@ all_findings, all_impressions, all_img_names, rids = shuffle(all_findings,
 inception_model = prepare_dataset.init_inception_model()
 
 # Preprocess and tokenize Findings and Impressions
-
 tokenizer, findings_vector = prepare_dataset.transform_input(all_findings, all_impressions, MAX_PARAGRAPH_LENGTH, MAX_SENTENCE_LENGTH)
 
 # Create training and validation sets using 80-20 split
@@ -112,15 +109,12 @@ def load_image(image_path):
     return img, image_path
 
 def map_func(img_name, findings):
-	#img_tensor = np.load(img_name.decode('utf-8')+'.npy')
-	#return img_tensor, findings
-	img, img_path = load_image(img_name)
-	img = tf.expand_dims(img, 0)
-	img_tensor = inception_model(img)
-	img_tensor = tf.reshape(img_tensor,
-							(-1, img_tensor.shape[3]))
-
-	return img_tensor, findings
+    img, img_path = load_image(img_name)
+    img = tf.expand_dims(img, 0)
+    img_tensor = inception_model(img)
+    img_tensor = tf.reshape(img_tensor,
+                            (-1, img_tensor.shape[3]))
+    return img_tensor, findings
 
 def _set_shapes(images, findings):
   # Statically set tensors dimensions

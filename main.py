@@ -117,86 +117,85 @@ def map_func(img_name, findings):
     return img_tensor, findings
 
 def _set_shapes(images, findings):
-  # Statically set tensors dimensions
-  #print(images.get_shape())
-  images.set_shape(tf.TensorShape([ATTENTION_FEATURES_SHAPE, FEATURES_SHAPE]))
-  findings.set_shape(findings.get_shape().merge_with(
-    tf.TensorShape([MAX_PARAGRAPH_LENGTH + MAX_PARAGRAPH_LENGTH, MAX_SENTENCE_LENGTH])))
-  return images, findings
+    # Statically set tensors dimensions
+    #print(images.get_shape())
+    images.set_shape(tf.TensorShape([ATTENTION_FEATURES_SHAPE, FEATURES_SHAPE]))
+    findings.set_shape(findings.get_shape().merge_with(
+            tf.TensorShape([MAX_PARAGRAPH_LENGTH + MAX_PARAGRAPH_LENGTH, MAX_SENTENCE_LENGTH])))
+    return images, findings
 
 def input_fn(params):
-	batch_size = params['batch_size']
-	#_img_name_train = np.asarray(img_name_train)
-	_findings_train = np.asarray(findings_train)
+    batch_size = params['batch_size']
+    #_img_name_train = np.asarray(img_name_train)
+    _findings_train = np.asarray(findings_train)
 
-	#my_dict = {
-		#"img_tensors": _img_name_train,
-		#"findings": _findings_train,
-	#}
+    #my_dict = {
+        #"img_tensors": _img_name_train,
+        #"findings": _findings_train,
+    #}
 
-	#dataset = tf.data.Dataset.from_tensor_slices((dict(my_dict)))
+    #dataset = tf.data.Dataset.from_tensor_slices((dict(my_dict)))
+    dataset = tf.data.Dataset.from_tensor_slices((img_name_train, _findings_train))
 
-	dataset = tf.data.Dataset.from_tensor_slices((img_name_train, _findings_train))
+    # using map to load the numpy files in parallel
+    # NOTE: Be sure to set num_parallel_calls to the number of CPU cores you have
+    # https://www.tensorflow.org/api_docs/python/tf/py_func
 
-	# using map to load the numpy files in parallel
-	# NOTE: Be sure to set num_parallel_calls to the number of CPU cores you have
-	# https://www.tensorflow.org/api_docs/python/tf/py_func
+    #dataset = dataset.map(lambda item: map_func, num_parallel_calls=8)
+    dataset = dataset.map(lambda item1, item2: tf.py_func(
+            map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=FLAGS.num_shards)
 
-	#dataset = dataset.map(lambda item: map_func, num_parallel_calls=8)
-	dataset = dataset.map(lambda item1, item2: tf.py_func(
-              map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=FLAGS.num_shards)
+    dataset = dataset.map(functools.partial(_set_shapes))
 
-	dataset = dataset.map(
-      functools.partial(_set_shapes)
-    )
-
-	# shuffling and batching
-	dataset = dataset.shuffle(10000).repeat()
-	# https://www.tensorflow.org/api_docs/python/tf/contrib/data/batch_and_drop_remainder
-	dataset = dataset.batch(batch_size, drop_remainder=True)
-	dataset = dataset.prefetch(1)
-	print("Dataset type:", dataset.output_shapes, dataset.output_types)
-	return dataset
+    # shuffling and batching
+    dataset = dataset.shuffle(10000).repeat()
+    # https://www.tensorflow.org/api_docs/python/tf/contrib/data/batch_and_drop_remainder
+    dataset = dataset.batch(batch_size, drop_remainder=True)
+    dataset = dataset.prefetch(1)
+    print("Dataset type:", dataset.output_shapes, dataset.output_types)
+    return dataset
 
 def model_fn(features, labels, mode, params):
 
-  print("Model_Fn Shapes:", features.shape, labels.shape)
-  print("Features:", features)
-  batch_size = params['batch_size']
+    print("Model_Fn Shapes:", features.shape, labels.shape)
+    print("Features:", features)
+    batch_size = params['batch_size']
 
-  if mode == tf.estimator.ModeKeys.TRAIN:
-    optimizer = tf.train.AdamOptimizer()
-    optimizer = tf.contrib.tpu.CrossShardOptimizer(optimizer)
-    loss, gradients, variables = trainer.train_fn(batch_size, features, labels)
-    train_op = optimizer.apply_gradients(zip(gradients, variables), tf.train.get_or_create_global_step())
+    if mode == tf.estimator.ModeKeys.TRAIN:
+        optimizer = tf.train.AdamOptimizer()
+        optimizer = tf.contrib.tpu.CrossShardOptimizer(optimizer)
+        loss, gradients, variables = trainer.train_fn(batch_size, features, labels)
+        train_op = optimizer.apply_gradients(zip(gradients, variables), tf.train.get_or_create_global_step())
 
-    return tf.contrib.tpu.TPUEstimatorSpec(mode=tf.estimator.ModeKeys.TRAIN,
-                                           loss = loss,
-                                           train_op = train_op)
+        return tf.contrib.tpu.TPUEstimatorSpec(mode=tf.estimator.ModeKeys.TRAIN,
+                                               loss = loss,
+                                               train_op = train_op)
 
 def main(argv):
-  del argv  # Unused.
-  tf.logging.set_verbosity(tf.logging.INFO)
+    del argv  # Unused.
+    tf.logging.set_verbosity(tf.logging.INFO)
 
-  tpu_cluster_resolver = tf.contrib.cluster_resolver.TPUClusterResolver(
-      FLAGS.tpu,
-      zone=FLAGS.tpu_zone,
-      project=FLAGS.gcp_project
-  )
+    tpu_cluster_resolver = tf.contrib.cluster_resolver.TPUClusterResolver(
+        FLAGS.tpu,
+        zone=FLAGS.tpu_zone,
+        project=FLAGS.gcp_project
+    )
 
-  run_config = tf.contrib.tpu.RunConfig(
-      cluster=tpu_cluster_resolver,
-      model_dir=FLAGS.model_dir,
-      tpu_config=tf.contrib.tpu.TPUConfig(FLAGS.iterations_per_loop, FLAGS.num_shards),
-  )
+    run_config = tf.contrib.tpu.RunConfig(
+        cluster=tpu_cluster_resolver,
+        model_dir=FLAGS.model_dir,
+        tpu_config=tf.contrib.tpu.TPUConfig(FLAGS.iterations_per_loop, FLAGS.num_shards),
+    )
 
-  estimator = tf.contrib.tpu.TPUEstimator(
-      model_fn=model_fn,
-      use_tpu=FLAGS.use_tpu,
-      train_batch_size=FLAGS.batch_size,
-      config=run_config)
-  # TPUEstimator.train *requires* a max_steps argument.
-  estimator.train(input_fn=input_fn, max_steps=FLAGS.train_steps)
+    estimator = tf.contrib.tpu.TPUEstimator(
+        model_fn=model_fn,
+        use_tpu=FLAGS.use_tpu,
+        train_batch_size=FLAGS.batch_size,
+        config=run_config
+    )
+
+    # TPUEstimator.train *requires* a max_steps argument.
+    estimator.train(input_fn=input_fn, max_steps=FLAGS.train_steps)
 
 if __name__ == "__main__":
-  tf.app.run()
+    tf.app.run()

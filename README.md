@@ -7,14 +7,14 @@ Our model takes a Chest X-ray image as input and generates a complete radiology 
 
 ## Sample
 ### Ground truth:
-<image align='left' src="samples/image_3707.png"/>
-
-**Findings:** sfffdffdfdfddf
-
-**Impression:** sfsfffsff
+<image align='left' src="samples/image_3707.png"  width="150px" height="150px"/>
 
 ---
+**Findings:** the cardiomediastinal silhouette is within normal limits for size and contour. The lungs are normally inflated without evidence of focal airspace disease, pleural effusion or pneumothorax. Stable calcified granuloma within the right upper lung. No acute bone abnormality.
 
+**Impression:** no acute cardiopulmonary process.
+
+---
 ### Model output:
 <image align='left' src="samples/image_3707.png"/>
 

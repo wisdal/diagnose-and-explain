@@ -32,7 +32,6 @@ Findings (left), Impression (right).
 	<image align='left' src="samples/findings_attention_plot_3707.png" width="425px"/>    
 	<image align='right' src="samples/impression_attention_plot_3707.png" width="400px"/>
 </p>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 
 ## Dataset
 We trained our model on the Indiana University [Chest X-Ray collection](https://openi.nlm.nih.gov/faq.php). The dataset

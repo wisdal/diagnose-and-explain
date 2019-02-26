@@ -24,7 +24,6 @@ def maybe_download():
     global image_folder, annotation_folder
     image_folder = './dataset/'
     annotation_folder = './dataset/ecgen-radiology/'
-    #return image_folder, annotation_folder
 
 def extract_data():
     all_findings = []
@@ -143,7 +142,6 @@ def transform_input(all_findings, all_impressions, max_paragraph_length, max_sen
     for findings in findings_vector:
         np.concatenate((findings, impressions_vector[i]))
         i += 1
-
     # Now, for a given batch "i", we can retrieve impressions = findings[i, max_paragraph_length:]
 
     return tokenizer, findings_vector

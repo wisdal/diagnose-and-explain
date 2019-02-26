@@ -19,32 +19,23 @@ class BahdanauAttention(tf.keras.Model):
         self.V = tf.keras.layers.Dense(1)
 
     def call(self, key, query):
-        # features(CNN_encoder output) shape == (batch_size, 64, embedding_dim)
+        # features(CNN_encoder output) shape: (batch_size, 64, embedding_dim)
+
         #print("Key Shape:", key.shape)
         #print("Query Shape:", query.shape)
 
-        # hidden shape == (batch_size, hidden_size)
-        # hidden_with_time_axis shape == (batch_size, 1, hidden_size)
-        #hidden_with_time_axis = tf.expand_dims(hidden, 1)
-
-        #print("W1:", self.W1(key).shape)
-        #print("W2:", self.W2(query).shape)
         score = tf.nn.tanh(self.W1(key) + self.W2(query))
-        #print("Score:", score.shape)
         attention_weights = tf.nn.softmax(self.V(score), axis=1)
         context_vector = attention_weights*key
-        #print("Context Vector:", context_vector.shape)
         context_vector = tf.reduce_sum(context_vector, axis=1)
-        #print("Context Vector Reduced:", context_vector.shape)
 
         return context_vector, attention_weights
 
 class CNN_Encoder(tf.keras.Model):
-    # Since we have already extracted the features and dumped it using pickle
-    # This encoder passes those features through a Fully connected layer
     def __init__(self, embedding_dim):
         super(CNN_Encoder, self).__init__()
-        # shape after fc == (batch_size, 64, embedding_dim)
+        # initial shape: (batch_size, 64, 2048)
+        # shape after passing through fc: (batch_size, 64, embedding_dim)
         self.fc = tf.keras.layers.Dense(embedding_dim)
 
     def call(self, x):
@@ -53,8 +44,6 @@ class CNN_Encoder(tf.keras.Model):
         return x
 
 class Sentence_Encoder(tf.keras.Model):
-    # Since we have already extracted the features and dumped it using pickle
-    # This encoder passes those features through a Fully connected layer
     def __init__(self, units):
         super(Sentence_Encoder, self).__init__()
         self.attention = BahdanauAttention(units)
@@ -74,8 +63,6 @@ class Sentence_Encoder(tf.keras.Model):
         return encoded_sentence, word_weights
 
 class Paragraph_Encoder(tf.keras.Model):
-    # Since we have already extracted the features and dumped it using pickle
-    # This encoder passes those features through a Fully connected layer
     def __init__(self, units):
         super(Paragraph_Encoder, self).__init__()
         self.attention = BahdanauAttention(units)
@@ -86,7 +73,7 @@ class Paragraph_Encoder(tf.keras.Model):
         features = tf.expand_dims(features, 1)
         features = tf.reshape(features, (features.shape[0], features.shape[1], -1))
         # encoded_paragraph: (batch_size, units)
-        # sentence_weights: (batch_size, max_paragraph_length)
+        # sentence_weights: (batch_size, MAX_PARAGRAPH_LENGTH)
         encoded_paragraph, sentence_weights = self.attention(encoded_sentences, features)
         return encoded_paragraph, sentence_weights
 
@@ -106,37 +93,26 @@ class Word_Decoder(tf.keras.Model):
         # prev_sentence: (batch_size, units)
         # hidden: (batch_size, units)
 
-        #print("X shape:", x.shape)
         # visual_context: (batch_size, embedding)
         # visual_weights: (batch_size, 64)
         hidden_with_time_axis = tf.expand_dims(hidden, 1)
         visual_context, visual_weights = self.attention(features, hidden_with_time_axis)
 
-        #print("X before embedding:", x.shape)
-        # x shape after passing through embedding == (batch_size, 1, embedding_dim)
+        # x shape after passing through embedding: (batch_size, 1, embedding_dim)
         x = self.embedding(x)
-        #print("X after embedding:", x.shape)
 
-        # x shape after concatenation == (batch_size, 1, embedding_dim + embedding_dim + units)
+        # x shape after concatenation:(batch_size, 1, embedding_dim + embedding_dim + units)
         x = tf.concat([tf.expand_dims(visual_context, 1), tf.expand_dims(prev_sentence, 1), x], axis=-1)
-        #print("X after concatenation", x.shape)
 
         # passing the concatenated vector to the GRU
-        # output: batch_size, 1, units
+        # output: (batch_size, 1, units)
         output, state = self.gru(x)
-        #print("Gru Output:", output.shape)
-
-        # shape == (batch_size, 1, units)
+        # shape: (batch_size, 1, units)
         x = self.fc1(output)
-        #print("FC1 Output:", x.shape)
-
-        # x shape == (batch_size * 1, units)
+        # x shape: (batch_size * 1, units)
         x = tf.reshape(x, (-1, x.shape[2]))
-        #print("X reshaped:", x.shape)
-
-        # output shape == (batch_size * 1, vocab_size)
+        # output shape: (batch_size * 1, vocab_size)
         x = self.fc2(x)
-        #print("Final X:", x.shape)
 
         return x, state, visual_weights
 
@@ -162,7 +138,7 @@ class Trainer():
 
     def train_word_decoder(self, batch_size, loss, features, findings, i, \
                            prev_sentence, fwd_hidden, bwd_hidden):
-        is_training_impressions = i >= int(findings.shape[1]/2)
+        is_training_impressions = (i >= int(findings.shape[1]/2))
 
         fwd_input = tf.expand_dims([self.tokenizer.word_index['<start>']] * batch_size, 1)
         bwd_input = tf.expand_dims([self.tokenizer.word_index['<pad>']] * batch_size, 1)
@@ -231,9 +207,9 @@ class Trainer():
                 loss, _, fwd_hidden, bwd_hidden = self.train_word_decoder(batch_size, loss, features, findings, i, \
                                                                           prev_sentence, fwd_hidden, bwd_hidden)
 
-            # Outside of "With tf.GradientTape()"
-            variables = self.image_encoder.variables + self.sentence_encoder.variables + self.paragraph_encoder.variables + \
-            self.fwd_decoder.variables + self.bwd_decoder.variables
+        # Outside of "With tf.GradientTape()"
+        variables = self.image_encoder.variables + self.sentence_encoder.variables + self.paragraph_encoder.variables + \
+                    self.fwd_decoder.variables + self.bwd_decoder.variables
 
         gradients = tape.gradient(loss, variables)
         return loss, gradients, variables

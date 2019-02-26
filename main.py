@@ -33,8 +33,6 @@ tf.flags.DEFINE_string(
     "specified, it can be automatically detected from metadata.")
 
 # Model specific parameters
-tf.flags.DEFINE_string("data_dir", "",
-                       "GCS path containing I.U Chest X-ray reports and images")
 tf.flags.DEFINE_string("model_dir", None, "Estimator model_dir")
 tf.flags.DEFINE_integer("batch_size", 1024,
                         "Mini-batch size for the training. Note that this "

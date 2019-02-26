@@ -5,24 +5,31 @@ Our model takes a Chest X-ray image as input and generates a complete radiology 
 * **Findings:** observations regarding each part of the chest examined. Generally a paragraph with 6+ sentences.
 * **Impression:** generally a one-sentence diagnostic based on findings reported. Can contain multiple sentences.
 
-### Sample
-Ground truth:
+## Sample
+### Ground truth:
+<image align='left' src="samples/image_3707.png"/>
 
-<image align='left' src="samples/image_3707.png" width="200px" height="350px"/>
 **Findings:** sfffdffdfdfddf
+
 **Impression:** sfsfffsff
 
-Model output:
+---
 
-<image align='left' src="samples/image_3707.png" width="200px" height="350px"/>
+### Model output:
+<image align='left' src="samples/image_3707.png"/>
+
 **Findings:** sfffdffdfdfddf
+
 **Impression:** sfsfffsff
 
+---
 ### Visual Attention Plot
 Findings (left), Impression (right)
 
-<image src="samples/findings_attention_plot_3707.png" width="300px"/>           <image src="samples/impression_attention_plot_3707.png" width="300px"/>
+<image align='left' src="samples/findings_attention_plot_3707.png" width="300px"/>    
+<image align='right' src="samples/impression_attention_plot_3707.png" width="300px"/>
   
+
 ## Dataset
 We trained our model on the Indiana University [Chest X-Ray collection](https://openi.nlm.nih.gov/faq.php). The dataset
 comes with **3955** chest radiology reports from various hospital systems and **7470** associated chest x-rays 

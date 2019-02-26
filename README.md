@@ -6,9 +6,17 @@ Our model takes a Chest X-ray image as input and generates a complete radiology 
 * **Impression:** generally a one-sentence diagnostic based on findings reported. Can contain multiple sentences.
 
 ### Sample
-Ground truth on the left, model output on the right. 
+Ground truth:
 
-<image src="samples/ground_truth_3707.png" width="200px" height="350px"/>       <image src="samples/generated_3707.png" width="200px" height="350px"/>
+<image align='left' src="samples/image_3707.png" width="200px" height="350px"/>
+**Findings:** sfffdffdfdfddf
+**Impression:** sfsfffsff
+
+Model output:
+
+<image align='left' src="samples/image_3707.png" width="200px" height="350px"/>
+**Findings:** sfffdffdfdfddf
+**Impression:** sfsfffsff
 
 ### Visual Attention Plot
 Findings (left), Impression (right)

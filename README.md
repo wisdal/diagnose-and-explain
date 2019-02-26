@@ -7,7 +7,7 @@ Our model takes a Chest X-ray image as input and generates a complete radiology 
 
 ## Sample
 ### Ground truth:
-<image align='left' src="samples/image_3707.png"  width="150px" height="170px"/>
+<image align='left' src="samples/image_3707.png"  width="150px" height="180px"/>
 
 ---
 
@@ -27,12 +27,11 @@ Our model takes a Chest X-ray image as input and generates a complete radiology 
 
 ---
 ### Visual Attention Plot
-Findings (left), Impression (right)
+Findings (left), Impression (right).
 <p>
-	<image align='left' src="samples/findings_attention_plot_3707.png" width="460px"/>    
+	<image align='left' src="samples/findings_attention_plot_3707.png" width="425px"/>    
 	<image align='right' src="samples/impression_attention_plot_3707.png" width="400px"/>
 </p>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>	
 
 ## Dataset
 We trained our model on the Indiana University [Chest X-Ray collection](https://openi.nlm.nih.gov/faq.php). The dataset

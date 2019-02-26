@@ -1,4 +1,4 @@
-# Automated Chest Radiology Reporting from X-ray using a CNN-LSTM model and a multi-level Attention Mechanism
+# Diagnose and Explain
 
 This repository contains code for the paper: "Diagnose and Explain: A Multi-Level Attention Model for Automated Radiology Reporting from Chest X-Ray"
 

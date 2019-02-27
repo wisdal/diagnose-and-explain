@@ -36,10 +36,9 @@ Findings (left), Impression (right).
 	<image align='left' src="samples/findings_attention_plot_3707.png" width="360px" height="360px"/>    
 	<image align='right' src="samples/impression_attention_plot_3707.png" width="380px"/>
 </p>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 
 ### Ground truth: 
-<image align='left' src="samples/image_1868.png"  width="150px" height="180px"/>
+<image align='left' src="samples/image_1868.png"  width="180px" height="180px"/>
 
 ---
 
@@ -49,7 +48,7 @@ Findings (left), Impression (right).
 
 ---
 ### Model output:
-<image align='left' src="samples/image_1868.png" width="150px" height="160px"/>
+<image align='left' src="samples/image_1868.png" width="180px" height="160px"/>
 
 ---
 

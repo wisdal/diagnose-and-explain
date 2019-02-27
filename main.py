@@ -107,7 +107,8 @@ def map_func(img_name, findings):
     img_tensor = inception_model(img)
     img_tensor = tf.reshape(img_tensor,
                             (-1, img_tensor.shape[3]))
-    img_tensor = np.asarray(img_tensor)
+
+    img_tensor = np.asarray(img_tensor.eval())
     return img_tensor, findings
 
 def _set_shapes(images, findings):

@@ -145,7 +145,7 @@ def input_fn(params):
 
     dataset = dataset.map(map_func)
 
-    dataset = dataset.map(functools.partial(_set_shapes))
+    #dataset = dataset.map(functools.partial(_set_shapes))
 
     # shuffling and batching
     dataset = dataset.shuffle(10000).repeat()

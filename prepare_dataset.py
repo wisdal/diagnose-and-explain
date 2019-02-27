@@ -137,11 +137,15 @@ def transform_input(all_findings, all_impressions, max_paragraph_length, max_sen
     findings_vector = [pad_sequences(findings, padding='post', maxlen=max_sentence_length) for findings in all_findings_seq]
     impressions_vector = [pad_sequences(impressions, padding='post', maxlen=max_sentence_length) for impressions in all_impressions_seq]
 
+    print(findings_vector[0])
+    print(impressions_vector[0])
+
     # Combining findings and impressions
     i = 0
     for findings in findings_vector:
         np.concatenate((findings, impressions_vector[i]))
         i += 1
     # Now, for a given batch "i", we can retrieve impressions = findings[i, max_paragraph_length:]
+    print(findings_vector[0])
 
     return tokenizer, findings_vector

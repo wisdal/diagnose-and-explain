@@ -116,7 +116,7 @@ def map_func(img_name, findings):
 
 def _set_shapes(images, findings):
     # Statically set tensors dimensions
-    print(images.get_shape(), findings.get_shape())
+    #print(images.get_shape(), findings.get_shape())
     images.set_shape(tf.TensorShape([ATTENTION_FEATURES_SHAPE, FEATURES_SHAPE]))
     findings.set_shape(findings.get_shape().merge_with(
             tf.TensorShape([MAX_PARAGRAPH_LENGTH + MAX_PARAGRAPH_LENGTH, MAX_SENTENCE_LENGTH])))
@@ -126,7 +126,7 @@ def input_fn(params):
     batch_size = params['batch_size']
     #_img_name_train = np.asarray(img_name_train)
     _findings_train = np.asarray(findings_train)
-    print(_findings_train[0])
+    #print(_findings_train[0])
 
     #my_dict = {
         #"img_tensors": _img_name_train,
@@ -141,10 +141,10 @@ def input_fn(params):
     # https://www.tensorflow.org/api_docs/python/tf/py_func
 
     #dataset = dataset.map(lambda item: map_func, num_parallel_calls=8)
-    #dataset = dataset.map(lambda item1, item2: tf.py_func(
-            #map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=FLAGS.num_shards)
+    dataset = dataset.map(lambda item1, item2: tf.contrib.eager.py_func(
+            map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=FLAGS.num_shards)
 
-    dataset = dataset.map(map_func)
+    #dataset = dataset.map(map_func)
 
     dataset = dataset.map(functools.partial(_set_shapes))
 

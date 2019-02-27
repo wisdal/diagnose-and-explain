@@ -31,7 +31,6 @@ These are few samples of our model performance on unseen records.
 ---
 
 ### Visual Attention Plot
-Findings (left), Impression (right).
 <p>
 	<image align='left' src="samples/findings_attention_plot_3707.png" width="320px" height="320px"/>    
 	<image align='right' src="samples/impression_attention_plot_3707.png" width="380px"/>
@@ -60,7 +59,6 @@ Findings (left), Impression (right).
 ---
 
 ### Visual Attention Plot
-Findings (left), Impression (right).
 <p>
 	<image align='left' src="samples/findings_attention_plot_1868.png" width="320px" height="320px"/>    
 	<image align='right' src="samples/impression_attention_plot_1868.png" width="380px"/>

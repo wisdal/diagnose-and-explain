@@ -94,11 +94,6 @@ trainer = model.Trainer(tokenizer, embedding_dim=256, units=512)
 FEATURES_SHAPE = 2048
 ATTENTION_FEATURES_SHAPE = 64
 
-#encode_train = sorted(set(all_img_names))
-# feel free to change the batch_size according to your system configuration
-#image_dataset = tf.data.Dataset.from_tensor_slices(
-#                                encode_train).map(load_image).batch(64)
-
 def load_image(image_path):
     img = tf.io.read_file(image_path)
     img = tf.image.decode_png(img, channels=3)
@@ -112,7 +107,7 @@ def map_func(img_name, findings):
     img_tensor = inception_model(img)
     img_tensor = tf.reshape(img_tensor,
                             (-1, img_tensor.shape[3]))
-    #img_tensor = np.array(img_tensor)
+    img_tensor = np.asarray(img_tensor)
     return img_tensor, findings
 
 def _set_shapes(images, findings):
@@ -125,29 +120,14 @@ def _set_shapes(images, findings):
 
 def input_fn(params):
     batch_size = params['batch_size']
-    #_img_name_train = np.asarray(img_name_train)
     _findings_train = np.asarray(findings_train)
-    #print(_findings_train[0])
 
-    #my_dict = {
-        #"img_tensors": _img_name_train,
-        #"findings": _findings_train,
-    #}
-
-    #dataset = tf.data.Dataset.from_tensor_slices((dict(my_dict)))
     dataset = tf.data.Dataset.from_tensor_slices((img_name_train, _findings_train))
 
-    # using map to load the numpy files in parallel
-    # NOTE: Be sure to set num_parallel_calls to the number of CPU cores you have
-    # https://www.tensorflow.org/api_docs/python/tf/py_func
+    #dataset = dataset.map(lambda item1, item2: tf.contrib.eager.py_func(
+                #map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=FLAGS.num_shards)
 
-    #dataset = dataset.map(lambda item: map_func, num_parallel_calls=8)
-
-    dataset = dataset.map(lambda item1, item2: tf.contrib.eager.py_func(
-                map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=FLAGS.num_shards)
-
-
-    #dataset = dataset.map(map_func)
+    dataset = dataset.map(map_func)
     dataset = dataset.map(functools.partial(_set_shapes))
 
     # shuffling and batching

@@ -5,8 +5,11 @@ Our model takes a Chest X-ray image as input and generates a complete radiology 
 * **Findings:** observations regarding each part of the chest examined. Generally a paragraph with 6+ sentences.
 * **Impression:** generally a one-sentence diagnostic based on findings reported. Can contain multiple sentences.
 
-## Sample
-### Ground truth:
+## Samples 
+
+These are few samples of our model performance on unseen records.
+
+### Ground truth: 
 <image align='left' src="samples/image_3707.png"  width="150px" height="180px"/>
 
 ---
@@ -30,10 +33,39 @@ Our model takes a Chest X-ray image as input and generates a complete radiology 
 ### Visual Attention Plot
 Findings (left), Impression (right).
 <p>
-	<image align='left' src="samples/findings_attention_plot_3707.png" width="425px"/>    
-	<image align='right' src="samples/impression_attention_plot_3707.png" width="400px"/>
+	<image align='left' src="samples/findings_attention_plot_3707.png" width="360px" height="360px"/>    
+	<image align='right' src="samples/impression_attention_plot_3707.png" width="380px"/>
 </p>
 <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+### Ground truth: 
+<image align='left' src="samples/image_1868.png"  width="150px" height="180px"/>
+
+---
+
+**Findings:** no finding.
+
+**Impression:** heart size is upper normal. No edema bandlike left base and lingular opacities. No scarring or atelectasis. No lobar consolidation pleural effusion or pneumothorax.
+
+---
+### Model output:
+<image align='left' src="samples/image_1868.png" width="150px" height="160px"/>
+
+---
+
+**Findings:** the heart is normal in size and contour. The lungs are clear bilaterally. Again, no evidence of focal airspace consolidation. No pleural effusion or pneumothorax.
+
+**Impression:** no acute overt abnormality.
+
+---
+
+### Visual Attention Plot
+Findings (left), Impression (right).
+<p>
+	<image align='left' src="samples/findings_attention_plot_1868.png" width="360px" height="360px"/>    
+	<image align='right' src="samples/impression_attention_plot_1868.png" width="380px"/>
+</p>
+<br/><br/><br/><br/><br/><br/>
 
 ## Dataset
 We trained our model on the Indiana University [Chest X-Ray collection](https://openi.nlm.nih.gov/faq.php). The dataset

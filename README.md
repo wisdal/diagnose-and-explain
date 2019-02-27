@@ -28,8 +28,6 @@ These are few samples of our model performance on unseen records.
 
 **Impression:** no acute osseus abnormality.
 
----
-
 <br/>
 
 ### Visual Attention Plot
@@ -61,8 +59,6 @@ Findings (left), Impression (right).
 
 **Impression:** no acute overt abnormality.
 
----
-
 <br/>
 
 ### Visual Attention Plot
@@ -71,7 +67,7 @@ Findings (left), Impression (right).
 	<image align='left' src="samples/findings_attention_plot_1868.png" width="320px" height="320px"/>    
 	<image align='right' src="samples/impression_attention_plot_1868.png" width="380px"/>
 </p>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 
 ## Dataset
 We trained our model on the Indiana University [Chest X-Ray collection](https://openi.nlm.nih.gov/faq.php). The dataset

@@ -155,8 +155,10 @@ def input_fn(params):
     # https://www.tensorflow.org/api_docs/python/tf/contrib/data/batch_and_drop_remainder
     dataset = dataset.batch(batch_size, drop_remainder=True)
 
-    for a, b in dataset:
-        print(a, b)
+    it = dataset.make_one_shot_iterator()
+
+    a, b = it.get_next()
+    print(a, b)
 
     dataset = dataset.prefetch(1)
     print("Dataset type:", dataset.output_shapes, dataset.output_types)

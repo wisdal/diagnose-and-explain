@@ -113,7 +113,7 @@ def map_func(img_name, findings):
     with sess.as_default():
         print(img_tensor)
         print("********")
-        img_tensor = np.asarray(img_tensor.numpy())
+        img_tensor = np.asarray(img_tensor.eval())
         print(img_tensor)
 
     return img_tensor, findings

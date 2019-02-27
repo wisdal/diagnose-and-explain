@@ -108,7 +108,7 @@ def map_func(img_name, findings):
     img_tensor = tf.reshape(img_tensor,
                             (-1, img_tensor.shape[3]))
 
-    img_tensor = np.asarray(img_tensor.eval())
+    img_tensor = np.asarray(img_tensor.numpy())
     return img_tensor, findings
 
 def _set_shapes(images, findings):

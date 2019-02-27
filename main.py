@@ -141,8 +141,10 @@ def input_fn(params):
     # https://www.tensorflow.org/api_docs/python/tf/py_func
 
     #dataset = dataset.map(lambda item: map_func, num_parallel_calls=8)
-    dataset = dataset.map(lambda item1, item2: tf.contrib.eager.py_func(
-            map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=FLAGS.num_shards)
+
+    with tf.device('/job:worker/replica:0/task:0/device:TPU:0'):
+        dataset = dataset.map(lambda item1, item2: tf.contrib.eager.py_func(
+                map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=FLAGS.num_shards)
 
     #dataset = dataset.map(map_func)
 

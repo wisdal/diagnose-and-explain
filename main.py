@@ -116,7 +116,7 @@ def map_func(img_name, findings):
 
 def _set_shapes(images, findings):
     # Statically set tensors dimensions
-    print(images.get_shape())
+    print(images.get_shape(), findings.get_shape())
     images.set_shape(tf.TensorShape([ATTENTION_FEATURES_SHAPE, FEATURES_SHAPE]))
     findings.set_shape(findings.get_shape().merge_with(
             tf.TensorShape([MAX_PARAGRAPH_LENGTH + MAX_PARAGRAPH_LENGTH, MAX_SENTENCE_LENGTH])))

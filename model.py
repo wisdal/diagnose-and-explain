@@ -1,5 +1,5 @@
-# Copyright 2018 Wisdom D'Almeida
-# Licensed under the Apache License, Version 2.0 (the "License")
+# Copyright 2019 Wisdom D'Almeida
+# Licensed under the Apache License, Version 2.0
 
 import tensorflow as tf
 import numpy as np

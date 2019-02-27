@@ -1,5 +1,5 @@
-# Copyright 2018 Wisdom D'Almeida
-# Licensed under the Apache License, Version 2.0 (the "License")
+# Copyright 2019 Wisdom D'Almeida
+# Licensed under the Apache License, Version 2.0
 
 from __future__ import absolute_import, division, print_function
 
@@ -112,6 +112,7 @@ def map_func(img_name, findings):
     img_tensor = inception_model(img)
     img_tensor = tf.reshape(img_tensor,
                             (-1, img_tensor.shape[3]))
+    img_tensor = np.ndarray(img_tensor)
     return img_tensor, findings
 
 def _set_shapes(images, findings):
@@ -142,12 +143,10 @@ def input_fn(params):
 
     #dataset = dataset.map(lambda item: map_func, num_parallel_calls=8)
 
-    with tf.device('/job:worker/replica:0/task:0/device:TPU:0'):
-        dataset = dataset.map(lambda item1, item2: tf.contrib.eager.py_func(
-                map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=FLAGS.num_shards)
+    #dataset = dataset.map(lambda item1, item2: tf.contrib.eager.py_func(
+                #map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=FLAGS.num_shards)
 
-    #dataset = dataset.map(map_func)
-
+    dataset = dataset.map(map_func)
     dataset = dataset.map(functools.partial(_set_shapes))
 
     # shuffling and batching

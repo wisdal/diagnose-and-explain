@@ -126,6 +126,7 @@ def input_fn(params):
     batch_size = params['batch_size']
     #_img_name_train = np.asarray(img_name_train)
     _findings_train = np.asarray(findings_train)
+    print(_findings_train[0])
 
     #my_dict = {
         #"img_tensors": _img_name_train,

@@ -112,7 +112,7 @@ def map_func(img_name, findings):
     img_tensor = inception_model(img)
     img_tensor = tf.reshape(img_tensor,
                             (-1, img_tensor.shape[3]))
-    img_tensor = np.ndarray(img_tensor)
+    #img_tensor = np.array(img_tensor)
     return img_tensor, findings
 
 def _set_shapes(images, findings):
@@ -143,16 +143,21 @@ def input_fn(params):
 
     #dataset = dataset.map(lambda item: map_func, num_parallel_calls=8)
 
-    #dataset = dataset.map(lambda item1, item2: tf.contrib.eager.py_func(
-                #map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=FLAGS.num_shards)
+    dataset = dataset.map(lambda item1, item2: tf.contrib.eager.py_func(
+                map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=FLAGS.num_shards)
 
-    dataset = dataset.map(map_func)
+
+    #dataset = dataset.map(map_func)
     dataset = dataset.map(functools.partial(_set_shapes))
 
     # shuffling and batching
     dataset = dataset.shuffle(10000).repeat()
     # https://www.tensorflow.org/api_docs/python/tf/contrib/data/batch_and_drop_remainder
     dataset = dataset.batch(batch_size, drop_remainder=True)
+
+    for a, b in dataset:
+        print(a, b)
+
     dataset = dataset.prefetch(1)
     print("Dataset type:", dataset.output_shapes, dataset.output_types)
     return dataset

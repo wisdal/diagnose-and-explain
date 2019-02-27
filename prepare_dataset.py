@@ -141,10 +141,8 @@ def transform_input(all_findings, all_impressions, max_paragraph_length, max_sen
     print(impressions_vector[0])
 
     # Combining findings and impressions
-    i = 0
-    for findings in findings_vector:
-        findings = np.concatenate((findings, impressions_vector[i]))
-        i += 1
+    for i in range(len(findings_vector)):
+        findings_vector[i] = np.concatenate((findings_vector[i], impressions_vector[i]))
     # Now, for a given batch "i", we can retrieve impressions = findings[i, max_paragraph_length:]
     print(findings_vector[0])
 

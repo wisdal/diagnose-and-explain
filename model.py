@@ -168,16 +168,6 @@ class Trainer():
             print(hidden_states.shape, prev_sentence.shape)
         return loss, prev_sentence, fwd_hidden, bwd_hidden
 
-    """ Training
-
-    * We extract the features stored in the respective `.npy` files and then pass those features through the encoder.
-    * The encoder output, hidden state(initialized to 0) and the decoder input (which is the start token) is passed to the decoder.
-    * The decoder returns the predictions and the decoder hidden state.
-    * The decoder hidden state is then passed back into the model and the predictions are used to calculate the loss.
-    * Use teacher forcing to decide the next input to the decoder.
-    * Teacher forcing is the technique where the target word is passed as the next input to the decoder.
-    * The final step is to calculate the gradients and apply it to the optimizer and backpropagate.
-    """
     def train_fn(self, batch_size, img_tensor, findings):
         loss = 0
         with tf.GradientTape() as tape:
@@ -213,4 +203,3 @@ class Trainer():
 
         gradients = tape.gradient(loss, variables)
         return loss, gradients, variables
-        #optimizer.apply_gradients(zip(gradients, variables), tf.train.get_or_create_global_step())

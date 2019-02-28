@@ -1,5 +1,5 @@
 # Diagnose and Explain
-This repository contains code for the paper: **"Diagnose and Explain: A Multi-Level Attention Model for Automated Radiology Reporting from Chest X-Ray"** (will update with an ArXiv link when our preprint is published)
+This repository contains code for the paper: **"Diagnose and Explain: A Multi-Level Attention Model for Automated Radiology Reporting from Chest X-Ray"** (will update with arXiv link when preprint gets published)
 
 Our model takes a Chest X-ray image as input and generates a complete radiology report using Natural Langugage. The generated report contains 2 sections:
 * **Findings:** observations regarding each part of the chest examined. Generally a paragraph with 6+ sentences.

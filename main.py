@@ -124,10 +124,10 @@ def input_fn(params):
 
     dataset = tf.data.Dataset.from_tensor_slices((img_name_train, _findings_train))
 
-    dataset = dataset.map(lambda item1, item2: tf.py_func(
-                map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=FLAGS.num_shards)
+    #dataset = dataset.map(lambda item1, item2: tf.py_func(
+                #map_func, [item1, item2], [tf.float32, tf.int32]), num_parallel_calls=FLAGS.num_shards)
 
-    #dataset = dataset.map(map_func)
+    dataset = dataset.map(map_func)
     dataset = dataset.map(functools.partial(_set_shapes))
 
     # shuffling and batching

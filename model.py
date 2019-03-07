@@ -177,7 +177,7 @@ class Trainer():
             fwd_hidden = tf.zeros((batch_size, self.units))
             bwd_hidden = tf.zeros((batch_size, self.units))
             # Generate Findings
-            for i in range(3) #range(int(findings.shape[1]/2)): # for each sentence in "findings" (each batch has a fixed # of sentences)
+            for i in range(3): #range(int(findings.shape[1]/2)): # for each sentence in "findings" (each batch has a fixed # of sentences)
                 print("-------------------------------------i:", i)
                 loss, prev_sentence, fwd_hidden, bwd_hidden = self.train_word_decoder(batch_size, loss, features, findings, i, \
                                                                                       prev_sentence, fwd_hidden, bwd_hidden)

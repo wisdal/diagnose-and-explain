@@ -1,8 +1,8 @@
 # Diagnose and Explain
-This repository contains code for the paper: **"Diagnose and Explain: A Multi-Level Attention Model for Automated Radiology Reporting from Chest X-Ray"** (will update with arXiv link when preprint gets published)
+This repository contains code for the paper: **"Diagnose and Explain: Medical Report Generation with Natural Language Explanations"** (will update with arXiv link when preprint gets published)
 
-Our model takes a Chest X-ray image as input and generates a complete radiology report using Natural Langugage. The generated report contains 2 sections:
-* **Findings:** observations regarding each part of the chest examined. Generally a paragraph with 6+ sentences.
+Our model takes a single Chest X-ray image as input and generates a complete radiology report using Natural Langugage. The generated report contains 2 sections:
+* **Findings:** (the explanation) observations regarding each part of the chest examined. Generally a paragraph with 4+ sentences.
 * **Impression:** generally a one-sentence diagnostic based on findings reported. Can contain multiple sentences.
 
 ## Samples 
@@ -73,10 +73,7 @@ comes with **3955** chest radiology reports from various hospital systems and **
 ## Model architecture
 Our model uses a CNN-LSTM to generate words. Features extracted from a CNN model are encoded and used by an hierarchical RNN to generate paragraphs sentence by sentence. We use an attention mechanism at many levels of the decoding stage to extract visual and semantic features. These are used to guide the word decoder and provide additional context.
 
-More details on our model architecture and proposed approach will be shared in a near future -we are working on publishing a preprint of our paper.
-
 ## Training on Cloud TPU
-Our code was designed for training on Google Cloud TPU.
 
 * Head over to TensorFlow's quickstart on [setting up a TPU instance](https://cloud.google.com/tpu/docs/quickstart) to get started with running models on Cloud TPU.
 * Clone this repository and `cd` into directory 

@@ -1,5 +1,5 @@
 # Diagnose and Explain
-This repository contains code for the paper: **"Diagnose and Explain: Medical Report Generation with Natural Language Explanations"** (will update with arXiv link when preprint gets published)
+This repository contains code for the paper: **"Diagnose and Explain: Medical Report Generation with Natural Language Explanations"** (will update with arXiv link when paper is published)
 
 Our model takes a single Chest X-ray image as input and generates a complete radiology report using Natural Langugage. The generated report contains 2 sections:
 * **Findings:** (the explanation) observations regarding each part of the chest examined. Generally a paragraph with 4+ sentences.

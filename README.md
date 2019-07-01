@@ -71,7 +71,7 @@ comes with **3955** chest radiology reports from various hospital systems and **
 (most reports are associated with 2 or more images representing frontal and lateral views).
 
 ## Model architecture
-Our model uses a CNN-LSTM to generate words. Features extracted from a CNN model are encoded and used by an hierarchical RNN to generate paragraphs sentence by sentence. We use an attention mechanism at many levels of the decoding stage to extract visual and semantic features. These are used to guide the word decoder and provide additional context.
+Our model uses a CNN-LSTM to generate words. Features extracted from a CNN model are encoded and used by an hierarchical RNN to generate paragraphs sentence by sentence. We use an attention mechanism at many levels of the decoding stage to extract visual and semantic features. These are used to guide the word decoder and provide additional context to the language model.
 
 ## Training on Cloud TPU
 
@@ -87,6 +87,6 @@ Our model uses a CNN-LSTM to generate words. Features extracted from a CNN model
   ```
   
 ## Acknowledgements
-Parts of these experiments were possible thanks to the TensorFlow Research Cloud Program which offers free TPUs for training and running models on Google Cloud for a limited period of time.
+These experiments were possible thanks to the TensorFlow Research Cloud Program which offererd TPUs to train and run this model at scale.
 
 Parts of the model code was inspired by this TensorFlow [tutorial](https://github.com/tensorflow/tensorflow/blob/r1.13/tensorflow/contrib/eager/python/examples/nmt_with_attention/nmt_with_attention.ipynb)
